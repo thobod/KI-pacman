@@ -56,6 +56,8 @@ class GoWestAgent(Agent):
 #       after you fill in parts of search.py          #
 #######################################################
 
+
+
 class SearchAgent(Agent):
     """
     This very general search agent finds a path using a supplied search
@@ -296,13 +298,13 @@ class CornersProblem(search.SearchProblem):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        return state[1] == (True, True, True, True)
+        return all(state[1])
 
     def getSuccessors(self, state):
+        from copy import deepcopy
         """
         Returns successor states, the actions they require, and a cost of 1.
         """
-        
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             x, y = move(state[0], action)

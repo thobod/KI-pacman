@@ -83,23 +83,17 @@ def breadthFirstSearch(problem):
 "Currently ony for DFS and BFS, needs a parameter for the way it is pushed to the stack"
 def generalSearch(problem, datastructure):
     fronteir = datastructure
-    prev = sets.Set()
-
     fronteir.push((problem.getStartState(), [], 0))
 
+    prev = []
     while not fronteir.isEmpty():
-        nowState, history, currentCost = fronteir.pop()
-        prev.add(nowState)
-
-        "Return if the goal state was reached"
-        if problem.isGoalState(nowState):
-            return history
-
-        "Otherwise iterate through the succesors and push the unseen ones onto the fronteir"
+        nowState, history, nowCost = fronteir.pop()
         for state, direc, cost in problem.getSuccessors(nowState):
-            if(state not in prev):
-                fronteir.push((state, history+[direc], cost+currentCost))
-
+            if not state in prev:
+                if problem.isGoalState(nowState):
+                    return history
+                prev.append(state)
+                fronteir.push( (state, history+[direc], cost+nowCost) )
     return []
 
 def uniformCostSearch(problem):
@@ -110,15 +104,14 @@ def uniformCostSearch(problem):
 
     while not fronteir.isEmpty():
         nowState, history, currentCost = fronteir.pop()
-        prev.add(nowState)
-
-        "Return if the goal state was reached"
-        if problem.isGoalState(nowState):
-            return history
-
+        
         "Otherwise iterate through the succesors and push the unseen ones onto the fronteir"
         for state, direc, cost in problem.getSuccessors(nowState):
             if(state not in prev):
+                "Return if the goal state was reached"
+                if problem.isGoalState(nowState):
+                    return history
+                prev.add(state)
                 fronteir.push((state, history+[direc], cost+currentCost), cost+currentCost)
 
     return []
@@ -133,22 +126,19 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     fronteir = util.PriorityQueue()
     prev = sets.Set()
-    
-    start = problem.getStartState()
-    startcost = heuristic(start, problem)
-    fronteir.push((start, [], startcost), startcost)
+
+    fronteir.push((problem.getStartState(), [], 0), 0)
 
     while not fronteir.isEmpty():
         nowState, history, currentCost = fronteir.pop()
-        prev.add(nowState)
-
-        "Return if the goal state was reached"
-        if problem.isGoalState(nowState):
-            return history
-
+        
         "Otherwise iterate through the succesors and push the unseen ones onto the fronteir"
         for state, direc, cost in problem.getSuccessors(nowState):
             if(state not in prev):
+                "Return if the goal state was reached"
+                if problem.isGoalState(nowState):
+                    return history
+                prev.add(state)
                 fronteir.push((state, history+[direc], cost+currentCost), cost+currentCost + heuristic(state, problem))
 
     return []
