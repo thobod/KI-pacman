@@ -352,11 +352,32 @@ def cornersHeuristic(state, problem):
     minDistToCorner = dist(pacpos,tovisit[0])
     for pos in tovisit[1:]:
         min(minDistToCorner, dist(pacpos, pos))
-        
 
+    maxX, maxY = tovisit[0]
+    minX, minY = tovisit[0]
+    for x, y in tovisit[1:]:
+        maxX = max(maxX, x)
+        maxY = max(maxY, y)
+        minX = min(minX, x)
+        minY = min(minY, y)
+
+    distBetweenCorners = (maxX - minX -2) + (maxY - minY -2)
+    #print distBetweenCorners
     "*** YOUR CODE HERE ***"
-    return minDistToCorner + (len(tovisit) - 1) * min(problem.top, problem.right) # Default to trivial solution
+    return minDistToCorner #+ distBetweenCorners  # Default to trivial solution
 
+
+    # minDX = 0
+    # minDY = 0
+    # for idx, pos in enumerate(tovisit[:-1]):
+    #     x1, y1 = pos
+    #     x2, y2 = tovisit[idx+1]
+    #     dx = abs(x1 - x2)
+    #     dy = abs(y1 - y2)
+    #     if(dx > 0):
+    #         minDX = min(dx, minDX)
+    #     else:
+    #         minDY = min(dy, minDY)
 def dist(p1, p2):
     x1, y1 = p1
     x2, y2 = p2
@@ -445,10 +466,10 @@ def foodHeuristic(state, problem):
         minX = min(minX, x)
         minY = min(minY, y)
     
-    if((minX != posX and maxX != posX) or 
-       (minY != posY and maxY != posX)):
-        cost += min(dist(position, (maxX, maxY)),
-                    dist(position, (minX, minY)))
+    # if((minX != posX and maxX != posX) or 
+    #    (minY != posY and maxY != posX)):
+    #     cost += min(min(position, (maxX, maxY)),
+    #                 dist(position, (minX, minY)))
         
     maxDX = maxX - minX
     maxDY = maxY - minY
@@ -482,8 +503,9 @@ class ClosestDotSearchAgent(SearchAgent):
         food = gameState.getFood()
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
-
         "*** YOUR CODE HERE ***"
+        return search.bfs(problem)
+
         
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -517,7 +539,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         The state is Pacman's position. Fill this in with a goal test that will
         complete the problem definition.
         """
-        return state in self.food
+        return state in self.food.asList()
 
 
 def mazeDistance(point1, point2, gameState):
