@@ -434,6 +434,9 @@ def foodHeuristic(state, problem):
     if len(foodList) == 0:
         return 0
 
+    cost = 0
+
+    posX, posY = position
     maxX, maxY = position
     minX, minY = position
     for x, y in foodList:
@@ -442,9 +445,15 @@ def foodHeuristic(state, problem):
         minX = min(minX, x)
         minY = min(minY, y)
     
+    if((minX != posX and maxX != posX) or 
+       (minY != posY and maxY != posX)):
+        cost += min(dist(position, (maxX, maxY)),
+                    dist(position, (minX, minY)))
+        
     maxDX = maxX - minX
     maxDY = maxY - minY
-    return maxDX + maxDY
+    cost += max(len(foodList), maxDX + maxDY)
+    return cost
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -475,7 +484,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -508,10 +517,8 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         The state is Pacman's position. Fill this in with a goal test that will
         complete the problem definition.
         """
-        x,y = state
+        return state in self.food
 
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
 
 def mazeDistance(point1, point2, gameState):
     """

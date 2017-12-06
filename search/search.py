@@ -90,8 +90,8 @@ def generalSearch(problem, datastructure):
         nowState, history, nowCost = fronteir.pop()
         for state, direc, cost in problem.getSuccessors(nowState):
             if not state in prev:
-                if problem.isGoalState(nowState):
-                    return history
+                if problem.isGoalState(state):
+                    return history+[direc]
                 prev.append(state)
                 fronteir.push( (state, history+[direc], cost+nowCost) )
     return []
@@ -109,8 +109,8 @@ def uniformCostSearch(problem):
         for state, direc, cost in problem.getSuccessors(nowState):
             if(state not in prev):
                 "Return if the goal state was reached"
-                if problem.isGoalState(nowState):
-                    return history
+                if problem.isGoalState(state):
+                    return history+[direc]
                 prev.add(state)
                 fronteir.push((state, history+[direc], cost+currentCost), cost+currentCost)
 
@@ -136,8 +136,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         for state, direc, cost in problem.getSuccessors(nowState):
             if(state not in prev):
                 "Return if the goal state was reached"
-                if problem.isGoalState(nowState):
-                    return history
+                if problem.isGoalState(state):
+                    return history+[direc]
                 prev.add(state)
                 fronteir.push((state, history+[direc], cost+currentCost), cost+currentCost + heuristic(state, problem))
 
