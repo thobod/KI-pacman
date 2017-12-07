@@ -285,8 +285,8 @@ class CornersProblem(search.SearchProblem):
             if not startingGameState.hasFood(*corner):
                 print 'Warning: no food in corner ' + str(corner)
         self._expanded = 0 
-        self.top = top
-        self.right = right
+        self.dx = top - 1
+        self.dy = right - 1
 
         "*** YOUR CODE HERE ***"
 
@@ -342,40 +342,23 @@ def move(pos, action):
     return nextx, nexty
 
 def cornersHeuristic(state, problem):
+    "*** YOUR CODE HERE ***"
     if(len(state[1]) == 0):
         return 0
 
-    pacpos, tovisit = state
+    cost = 0
+    pos = state[0]
+    corners = list(state[1])
+    
+    while(len(corners) > 0):
+        distance, corner = min([(dist(pos ,corner), corner) 
+                                    for corner in corners])
+        cost += distance
+        pos = corner
+        corners.remove(corner) 
 
-    minDistToCorner = dist(pacpos,tovisit[0])
-    for pos in tovisit[1:]:
-        min(minDistToCorner, dist(pacpos, pos))
+    return cost 
 
-    maxX, maxY = tovisit[0]
-    minX, minY = tovisit[0]
-    for x, y in tovisit[1:]:
-        maxX = max(maxX, x)
-        maxY = max(maxY, y)
-        minX = min(minX, x)
-        minY = min(minY, y)
-
-    distBetweenCorners = min((maxX - minX),(maxY - minY))/2
-
-    "*** YOUR CODE HERE ***"
-    return minDistToCorner + distBetweenCorners #+ distBetweenCorners  # Default to trivial solution
-
-
-    # minDX = 0
-    # minDY = 0
-    # for idx, pos in enumerate(tovisit[:-1]):
-    #     x1, y1 = pos
-    #     x2, y2 = tovisit[idx+1]
-    #     dx = abs(x1 - x2)
-    #     dy = abs(y1 - y2)
-    #     if(dx > 0):
-    #         minDX = min(dx, minDX)
-    #     else:
-    #         minDY = min(dy, minDY)
 def dist(p1, p2):
     x1, y1 = p1
     x2, y2 = p2
