@@ -349,12 +349,17 @@ def cornersHeuristic(state, problem):
     cost = 0
     pos = state[0]
     corners = list(state[1])
-    
+
+    "While there are corners to explore" 
     while(len(corners) > 0):
+        "Find closest corner to pos"
         distance, corner = min([(dist(pos ,corner), corner) 
                                     for corner in corners])
+        "Add to cost"
         cost += distance
+        "Go to this corner"
         pos = corner
+        "Delete current corner and repeat"
         corners.remove(corner) 
 
     return cost 
@@ -433,11 +438,13 @@ def foodHeuristic(state, problem):
     position, foodGrid = state
     foodList = foodGrid.asList()
     
+    "No more food, cost is 0"
     if len(foodList) == 0:
         return 0
 
     cost = 0
 
+    "Find minimum and maximum X and Y values"
     posX, posY = position
     maxX, maxY = position
     minX, minY = position
@@ -451,7 +458,8 @@ def foodHeuristic(state, problem):
     #    (minY != posY and maxY != posX)):
     #     cost += min(min(position, (maxX, maxY)),
     #                 dist(position, (minX, minY)))
-        
+    
+    "Find minimum distance"
     maxDX = maxX - minX
     maxDY = maxY - minY
     cost += max(len(foodList), maxDX + maxDY)
